@@ -20,19 +20,27 @@ var (
 )
 
 func drawAttract() {
-	ctx.StrokeText("Title", canvasWidth/2, canvasHeight/2, canvasWidth)
+	ctx.FillStyle = "black"
+	ctx.Font = "48px serif"
+	ctx.FillText("Title", canvasWidth/2, canvasHeight/2, canvasWidth)
 }
 
 func drawSettings() {
-	ctx.StrokeText("Settings", canvasWidth/2, canvasHeight/2, canvasWidth)
+	ctx.FillStyle = "black"
+	ctx.Font = "48px serif"
+	ctx.FillText("Settings", canvasWidth/2, canvasHeight/2, canvasWidth)
 }
 
 func drawPlaying() {
-	ctx.StrokeText("Playing", canvasWidth/2, canvasHeight/2, canvasWidth)
+	ctx.FillStyle = "black"
+	ctx.Font = "48px serif"
+	ctx.FillText("Playing", canvasWidth/2, canvasHeight/2, canvasWidth)
 }
 
 func drawGameOver() {
-	ctx.StrokeText("Game Over", canvasWidth/2, canvasHeight/2, canvasWidth)
+	ctx.FillStyle = "black"
+	ctx.Font = "48px serif"
+	ctx.FillText("Game Over", canvasWidth/2, canvasHeight/2, canvasWidth)
 }
 
 func update() {
