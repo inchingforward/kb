@@ -5,80 +5,31 @@ import (
 	"github.com/oskca/gopherjs-dom"
 )
 
-const (
-	stateAttract  = 0
-	stateSettings = 1
-	statePlaying  = 2
-	stateGameOver = 3
-)
-
 var (
-	ctx          *canvas.Context2D
-	canvasWidth  float64
-	canvasHeight float64
-	gameState    = stateAttract
+	ctx           *canvas.Context2D
+	canvasWidth   float64
+	canvasHeight  float64
+	currentScreen GameScreen
 )
 
-func drawAttract() {
-	ctx.FillStyle = "black"
-	ctx.Font = "48px serif"
-	ctx.FillText("Title", canvasWidth/2, canvasHeight/2, canvasWidth)
+// GameScreen represents the current screen the player is interacting with.
+type GameScreen interface {
+	Draw(ctx *canvas.Context2D)
+	Update(ctx *canvas.Context2D)
+	KeyPressed(keyCode int, pressed bool)
 }
 
-func drawSettings() {
-	ctx.FillStyle = "black"
-	ctx.Font = "48px serif"
-	ctx.FillText("Settings", canvasWidth/2, canvasHeight/2, canvasWidth)
-}
-
-func drawPlaying() {
-	ctx.FillStyle = "black"
-	ctx.Font = "48px serif"
-	ctx.FillText("Playing", canvasWidth/2, canvasHeight/2, canvasWidth)
-}
-
-func drawGameOver() {
-	ctx.FillStyle = "black"
-	ctx.Font = "48px serif"
-	ctx.FillText("Game Over", canvasWidth/2, canvasHeight/2, canvasWidth)
-}
-
-func update() {
-
-}
-
-func keyPressed(keyCode int, pressed bool) {
-	switch gameState {
-	case stateAttract:
-		gameState = stateSettings
-	case stateSettings:
-		gameState = statePlaying
-	case statePlaying:
-		gameState = stateGameOver
-	case stateGameOver:
-		gameState = stateSettings
-	}
-}
-
-func draw() {
-	ctx.FillStyle = "white"
-	ctx.FillRect(0.0, 0.0, canvasWidth, canvasHeight)
-
-	switch gameState {
-	case stateAttract:
-		drawAttract()
-	case stateSettings:
-		drawSettings()
-	case statePlaying:
-		drawPlaying()
-	case stateGameOver:
-		drawGameOver()
-	}
+// SetCurrentGameScreen switches the screen to the given GameState.
+func SetCurrentGameScreen(state GameScreen) {
+	currentScreen = state
 }
 
 func gameLoop() {
-	update()
-	draw()
+	ctx.FillStyle = "white"
+	ctx.FillRect(0.0, 0.0, canvasWidth, canvasHeight)
+
+	currentScreen.Update(ctx)
+	currentScreen.Draw(ctx)
 
 	dom.Window().Call("setTimeout", gameLoop, 1000/30)
 }
@@ -91,8 +42,10 @@ func main() {
 	canvasWidth = float64(cnvs.Width)
 	canvasHeight = float64(cnvs.Height)
 
+	currentScreen = AttractScreen{}
+
 	window.AddEventListener(dom.EvtKeypress, func(event *dom.Event) {
-		keyPressed(event.KeyCode, true)
+		currentScreen.KeyPressed(event.KeyCode, true)
 	})
 
 	gameLoop()
