@@ -1,6 +1,19 @@
 package main
 
-import canvas "github.com/oskca/gopherjs-canvas"
+import (
+	"math"
+	"math/rand"
+
+	canvas "github.com/oskca/gopherjs-canvas"
+)
+
+// AttractScreen is the first screen displayed to the player.
+type AttractScreen struct{}
+
+type glyph struct {
+	x, y, dy float64
+	kana     rune
+}
 
 const (
 	colorTurquoise  = "#1ABC9C"
@@ -15,52 +28,51 @@ const (
 	colorConcrete   = "#95A5A6"
 )
 
-// AttractScreen is the first screen displayed to the player.
-type AttractScreen struct{}
+var (
+	glyphs []glyph
+)
+
+func randomRange(min, max float64) float64 {
+	return min + rand.Float64()*(max-min)
+}
+
+// Setup initializes various variables used in the Attract screen.
+func (screen AttractScreen) Setup() {
+	characters := "あえいうおまめみむもかけきくこ"
+
+	glyphs = make([]glyph, len(characters))
+
+	for i, k := range characters {
+		glyphs[i] = glyph{float64(i * 14), randomRange(0, canvasHeight-1), randomRange(0.5, 2.5), k}
+	}
+}
 
 // Update handles object updates for the attract screen.
-func (state AttractScreen) Update(ctx *canvas.Context2D) {
-
+func (screen AttractScreen) Update(ctx *canvas.Context2D) {
+	for i := range glyphs {
+		glyphs[i].y = math.Mod(canvasHeight+glyphs[i].y+glyphs[i].dy, canvasHeight)
+	}
 }
 
 // Draw handles drawing for the attract screen.
-func (state AttractScreen) Draw(ctx *canvas.Context2D) {
+func (screen AttractScreen) Draw(ctx *canvas.Context2D) {
 	ctx.Font = "36px Noto Sans Japanese"
+	ctx.FillStyle = colorClouds
 
-	height := 36.0
-
-	ctx.FillStyle = colorTurquoise
-	ctx.FillText("あえいうお", canvasWidth/2, height*1, canvasWidth)
-
-	ctx.FillStyle = colorEmerald
-	ctx.FillText("あえいうお", canvasWidth/2, height*2, canvasWidth)
+	for _, g := range glyphs {
+		ctx.FillText(string(g.kana), g.x, g.y, canvasWidth)
+	}
 
 	ctx.FillStyle = colorPeterRiver
-	ctx.FillText("あえいうお", canvasWidth/2, height*3, canvasWidth)
+	ctx.TextAlign = "center"
+	ctx.FillText("Kana Blast", canvasWidth/2, canvasHeight/2, canvasWidth)
 
-	ctx.FillStyle = colorAmethyst
-	ctx.FillText("あえいうお", canvasWidth/2, height*4, canvasWidth)
-
-	ctx.FillStyle = colorWetAsphalt
-	ctx.FillText("あえいうお", canvasWidth/2, height*5, canvasWidth)
-
-	ctx.FillStyle = colorSunflower
-	ctx.FillText("あえいうお", canvasWidth/2, height*6, canvasWidth)
-
+	ctx.Font = "14px sans-serif"
 	ctx.FillStyle = colorCarrot
-	ctx.FillText("あえいうお", canvasWidth/2, height*7, canvasWidth)
-
-	ctx.FillStyle = colorAlizarin
-	ctx.FillText("あえいうお", canvasWidth/2, height*8, canvasWidth)
-
-	ctx.FillStyle = colorClouds
-	ctx.FillText("あえいうお", canvasWidth/2, height*9, canvasWidth)
-
-	ctx.FillStyle = colorConcrete
-	ctx.FillText("あえいうお", canvasWidth/2, height*10, canvasWidth)
+	ctx.FillText("Press Any Key To Start", canvasWidth/2, canvasHeight/2+28, canvasWidth)
 }
 
 // KeyPressed handles key presses for the attract screen.
-func (state AttractScreen) KeyPressed(keyCode int, pressed bool) {
+func (screen AttractScreen) KeyPressed(keyCode int, pressed bool) {
 	SetCurrentGameScreen(SettingsScreen{})
 }

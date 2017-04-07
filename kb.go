@@ -42,7 +42,9 @@ func main() {
 	canvasWidth = float64(cnvs.Width)
 	canvasHeight = float64(cnvs.Height)
 
-	currentScreen = AttractScreen{}
+	screen := AttractScreen{}
+	screen.Setup()
+	currentScreen = screen
 
 	window.AddEventListener(dom.EvtKeypress, func(event *dom.Event) {
 		currentScreen.KeyPressed(event.KeyCode, true)
