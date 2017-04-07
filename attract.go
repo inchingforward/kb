@@ -14,7 +14,7 @@ func (state AttractScreen) Update(ctx *canvas.Context2D) {
 func (state AttractScreen) Draw(ctx *canvas.Context2D) {
 	ctx.FillStyle = "black"
 	ctx.Font = "48px serif"
-	ctx.FillText("Title", canvasWidth/2, canvasHeight/2, canvasWidth)
+	ctx.FillText("あえいうお", canvasWidth/2, canvasHeight/2, canvasWidth)
 }
 
 // KeyPressed handles key presses for the attract screen.
