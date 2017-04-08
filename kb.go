@@ -19,9 +19,9 @@ type GameScreen interface {
 	KeyPressed(keyCode int, pressed bool)
 }
 
-// SetCurrentGameScreen switches the screen to the given GameState.
-func SetCurrentGameScreen(state GameScreen) {
-	currentScreen = state
+// SetCurrentGameScreen switches the screen to the given GameScreen.
+func SetCurrentGameScreen(screen GameScreen) {
+	currentScreen = screen
 }
 
 func gameLoop() {
